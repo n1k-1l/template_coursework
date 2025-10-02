@@ -1,0 +1,87 @@
+---
+title: "Coursework Template"
+subtitle: 'MSc in Statistics 2025/26, Imperial College London'
+author: "Nikhil Pant"
+format:
+  html:
+    toc: true
+    highlight: tango
+    self-contained: true
+    df-print: paged
+  pdf: default
+format-links: false
+bibliography: "MSc_Statistics_coursework_template_quarto.bib" 
+---
+
+<style type="text/css">
+h1{
+  font-size: 24pt;
+}
+h2{
+  font-size: 18pt;
+}
+body{
+  font-size: 12pt;
+}
+</style>
+
+
+```{r setup, include = FALSE, tidy=TRUE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+include_solutions <- TRUE
+```
+```{r setup2, include=FALSE, tidy=TRUE}
+require(rmarkdown)
+require(knitr)
+require(kableExtra)
+require(dplyr)
+# Put any library imports and other preamble here.
+
+```
+
+```{r}
+#| warning: false
+#| echo: false
+library(palmerpenguins)
+```
+
+# Palmer Penguins Analysis
+### Introduction
+We want to look at the general relationship between penguin bill length and depth,
+using the Palmer Penguins dataset. Let's first look at the basic relationship 
+between bill length and depth.
+```{r}
+#| echo: false
+plot(
+  x = penguins$bill_length_mm,
+  y = penguins$bill_depth_mm,
+  main = "Penguin bill dimensions",
+  sub = "Data source: Palmer Penguins"
+)
+```
+
+### Species Level Analysis
+Given the lack of a clear relationship when looking at overall bill length 
+and depth, we instead define the following function to examine mean bill
+length and depth by species.
+```{r}
+species_mean <- function() {
+  spec_df <- penguins %>% group_by(species) %>% summarise(
+    avg_bill_length_mm = mean(bill_length_mm, na.rm = TRUE),
+    avg_flipper_length_mm = mean(flipper_length_mm, na.rm = TRUE)
+  )
+  spec_df
+}
+
+spec_table <- species_mean()
+```
+This generates the following table:
+```{r}
+#| echo: false
+knitr::kable(round(spec_table, 2), col.names = c("Species","Avg Bill Length (mm)", "Avg Flipper Length (mm)"))
+```
+
+
